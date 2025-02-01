@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <!-- Updated viewport meta tag to prevent zooming -->
+  <!-- Updated viewport meta tag to prevent unwanted zooming -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Our Memory Pet! 💖</title>
 
@@ -13,27 +13,29 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="apple-touch-icon" href="icon-192.png">
   
-  <!-- Import Press Start 2P font from Google Fonts -->
+  <!-- Import Press Start 2P font from Google Fonts with a fixed fallback -->
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
   <style>
-    /* Ensure no horizontal scroll and proper sizing */
+    /* Ensure no horizontal scrolling */
     html, body {
       margin: 0;
       padding: 0;
       overflow-x: hidden;
     }
     
-    /* Use Press Start 2P with a more standard fallback and force normal style */
+    /* Base styling using Press Start 2P with a sans-serif fallback and forcing normal style */
     body {
       background: url('grassy_background.png') no-repeat center center fixed;
       background-size: cover;
-      font-family: 'Press Start 2P', sans-serif; /* Changed fallback from 'cursive' to 'sans-serif' */
-      font-style: normal;  /* Force normal, not italic */
+      font-family: 'Press Start 2P', sans-serif;
+      font-style: normal;
       text-align: center;
       color: #2E3440;
     }
-    h1, h2, p { margin: 10px; }
+    h1, h2, p {
+      margin: 10px;
+    }
     
     /* Bounce Animation for the Pet */
     @keyframes bounce {
@@ -43,14 +45,18 @@
       70%  { transform: translateY(-10px); }
       100% { transform: translateY(0); }
     }
-    .bounce { animation: bounce 0.6s ease; }
+    .bounce {
+      animation: bounce 0.6s ease;
+    }
     
     /* Fade-in Animation for Popups */
     @keyframes fadeIn {
       from { opacity: 0; }
       to   { opacity: 1; }
     }
-    .fade-in { animation: fadeIn 0.5s ease forwards; }
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
     
     /* Particle Animation for Effects */
     @keyframes particleFade {
@@ -70,7 +76,9 @@
       50% { transform: scale(1.2); }
       100% { transform: scale(1); }
     }
-    .pop { animation: pop 0.4s ease; }
+    .pop {
+      animation: pop 0.4s ease;
+    }
     
     /* Start Screen */
     #startScreen {
@@ -148,16 +156,33 @@
       z-index: 1000;
       text-align: center;
     }
-    .popup.fade-in { animation: fadeIn 0.5s ease forwards; }
-    #memoryScreen img { width: 200px; border-radius: 10px; }
+    .popup.fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+    #memoryScreen img {
+      width: 200px;
+      border-radius: 10px;
+    }
     /* Secret popup */
-    #secretPopup { background: #fff; z-index: 1100; }
+    #secretPopup {
+      background: #fff;
+      z-index: 1100;
+    }
     /* Final Congratulations popup */
-    #finalPopup { background: #fff; z-index: 1100; }
+    #finalPopup {
+      background: #fff;
+      z-index: 1100;
+    }
     /* Failure popup */
-    #failPopup { background: #fff; z-index: 1100; }
+    #failPopup {
+      background: #fff;
+      z-index: 1100;
+    }
     /* Confirmation popup */
-    #confirmPopup { background: #fff; z-index: 1100; }
+    #confirmPopup {
+      background: #fff;
+      z-index: 1100;
+    }
     
     /* Overlay for mini-games 1 & 2 (unused for Mini-Game 2 now) */
     .gameOverlay {
@@ -216,6 +241,33 @@
       width: 50px;
       height: 50px;
       cursor: pointer;
+    }
+    
+    /* ---- Landscape Mode Adjustments ---- */
+    @media only screen and (orientation: landscape) {
+      /* Increase the base font size if needed */
+      body {
+        font-size: 16px;
+      }
+      /* Adjust the game container to use the full viewport in landscape */
+      #gameContainer {
+        width: 100vw;
+        height: 100vh;
+        max-width: 100vw;
+        max-height: 100vh;
+        margin: 0;
+        padding: 10px;
+        box-sizing: border-box;
+        overflow: auto;
+      }
+      /* Optionally adjust headings and buttons */
+      h1, h2, p {
+        margin: 8px;
+      }
+      .button {
+        padding: 8px 16px;
+        margin: 8px;
+      }
     }
   </style>
 </head>
