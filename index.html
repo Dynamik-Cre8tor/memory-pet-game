@@ -1,112 +1,817 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Our Memory Pet! 💖</title>
+  <meta charset="UTF-8">
+  <!-- Prevent unwanted zooming -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Our Memory Pet! 💖</title>
 
-    <!-- Manifest and iOS Meta Tags -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="apple-touch-icon" href="icon-192.png">
+  <!-- Link to the manifest file -->
+  <link rel="manifest" href="manifest.json">
+  <!-- iOS meta tags for full-screen mode -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  
+  <!-- Import Press Start 2P font with a sans-serif fallback and force normal style -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    /* Basic resets */
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    /* Base styling using Press Start 2P with sans-serif fallback */
+    body {
+      background: url('grassy_background.png') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Press Start 2P', sans-serif;
+      font-style: normal;
+      text-align: center;
+      color: #2E3440;
+    }
+    h1, h2, p {
+      margin: 10px;
+    }
     
-    <style>
-        /* Reset & Basic Styling */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html, body {
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            font-family: 'Press Start 2P', sans-serif;
-            text-align: center;
-            background: url('grassy_background.png') no-repeat center center fixed;
-            background-size: cover;
-            color: #2E3440;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Title Fixes */
-        h1 {
-            font-size: 4vw;
-            line-height: 1.2;
-            width: 90%;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 10px;
-            border-radius: 8px;
-        }
-
-        /* Game UI */
-        #gameContainer {
-            width: 95vw;
-            height: 90vh;
-            background: rgba(255, 255, 255, 0.85);
-            padding: 15px;
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        #pet {
-            width: 150px;
-            max-width: 40vw;
-            cursor: pointer;
-        }
-
-        .button {
-            background: #BF616A;
-            padding: 10px 20px;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            display: inline-block;
-        }
-
-        /* Responsive Fixes */
-        @media (orientation: landscape) {
-            #gameContainer {
-                width: 100vw;
-                height: 100vh;
-                padding: 10px;
-                display: grid;
-                grid-template-rows: auto 1fr auto;
-            }
-            
-            h1 {
-                font-size: 3vw;
-            }
-            .button {
-                font-size: 2vw;
-            }
-        }
-    </style>
+    /* Animations */
+    @keyframes bounce {
+      0%   { transform: translateY(0); }
+      30%  { transform: translateY(-20px); }
+      50%  { transform: translateY(0); }
+      70%  { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+    .bounce {
+      animation: bounce 0.6s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+    
+    @keyframes particleFade {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-50px); }
+    }
+    .particle {
+      position: absolute;
+      pointer-events: none;
+      animation: particleFade 1s forwards;
+      font-size: 30px;
+    }
+    
+    @keyframes pop {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    .pop {
+      animation: pop 0.4s ease;
+    }
+    
+    /* UI Elements */
+    #startScreen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      background: rgba(136, 192, 208, 0.9);
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 20px;
+      z-index: 1000;
+    }
+    
+    #gameContainer {
+      display: none;
+      margin: 30px auto;
+      max-width: 90%;
+      background: rgba(255,255,255,0.85);
+      padding: 10px;
+      border-radius: 10px;
+    }
+    #pet {
+      width: 140px;
+      max-width: 50%;
+      cursor: pointer;
+      margin: 20px auto;
+      display: block;
+      transition: transform 0.3s, border 0.3s;
+      border: none;
+    }
+    .button {
+      background: #BF616A;
+      padding: 10px 20px;
+      margin: 10px;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      display: inline-block;
+    }
+    #hintText {
+      font-size: 12px;
+      color: #333;
+      margin-top: 5px;
+    }
+    
+    /* Fixed-position controls */
+    #musicButton, #pauseButton {
+      position: fixed;
+      background: #BF616A;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      padding: 10px;
+      z-index: 100;
+    }
+    #musicButton { bottom: 10px; right: 10px; }
+    #pauseButton { bottom: 10px; left: 10px; }
+    
+    /* Popup styling */
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      border: 3px solid #BF616A;
+      display: none;
+      z-index: 1000;
+      text-align: center;
+    }
+    .popup.fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+    #memoryScreen img {
+      width: 200px;
+      border-radius: 10px;
+    }
+    /* Secret, Final, Failure, Confirmation popups */
+    #secretPopup, #finalPopup, #failPopup, #confirmPopup {
+      background: #fff;
+      z-index: 1100;
+    }
+    
+    /* Overlay for mini-games (if needed) */
+    .gameOverlay {
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 200px;
+      bottom: 0;
+      z-index: 900;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+    
+    /* Timing Overlay for Mini-Game 3 */
+    .timingOverlay {
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 900;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    /* Timing Bar */
+    #barContainer {
+      width: 300px;
+      height: 20px;
+      background: #ccc;
+      margin: 20px auto;
+      position: relative;
+      overflow: hidden;
+      border-radius: 5px;
+    }
+    #bar {
+      width: 20px;
+      height: 100%;
+      background: #BF616A;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+    
+    /* Whack-a-Mole Button */
+    .mole {
+      background: #BF616A;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+    }
+    
+    /* ---- Landscape Mode Adjustments ---- */
+    @media only screen and (orientation: landscape) {
+      body {
+        font-size: 14px;
+      }
+      /* Adjust game container to fill almost the entire viewport */
+      #gameContainer {
+        width: 100vw;
+        height: calc(100vh - 20px);
+        max-width: 100vw;
+        max-height: calc(100vh - 20px);
+        margin: 0;
+        padding: 5px;
+        box-sizing: border-box;
+        overflow-y: auto; /* Allow vertical scrolling if content overflows */
+      }
+      h1, h2, p {
+        margin: 5px;
+        font-size: 0.9em;
+      }
+      .button {
+        padding: 5px 10px;
+        margin: 5px;
+        font-size: 0.8em;
+      }
+      #stats {
+        font-size: 0.8em;
+        margin: 5px;
+      }
+      #pet {
+        width: 30vw;
+        height: auto;
+      }
+    }
+  </style>
 </head>
 <body>
+  <!-- START SCREEN -->
+  <div id="startScreen">
     <h1>OUR MEMORY PET! 💖</h1>
-    <div id="gameContainer">
-        <div>
-            <h2>TAKE CARE OF OUR PET! 🌟</h2>
-            <p>Hunger: 100% | Happiness: 100%</p>
-        </div>
-        <img id="pet" src="pet_happy.png" alt="Pet">
-        <p>Hint: Tap your pet repeatedly for a secret surprise!</p>
-        <div>
-            <div class="button">🍕 FEED (+15%)</div>
-            <div class="button">🎮 PLAY (+10%)</div>
-        </div>
+    <p>Keep the pet fed &amp; happy. Win mini-games to unlock memories!</p>
+    <div class="button" onclick="startGame()">START GAME</div>
+  </div>
+
+  <!-- GAME AUDIO -->
+  <audio id="bgMusic" loop>
+    <source src="lofi.mp3" type="audio/mpeg">
+  </audio>
+  <!-- Ambient Sound -->
+  <audio id="ambientSound" loop>
+    <source src="ambient.mp3" type="audio/mpeg">
+  </audio>
+  <!-- Menu Music for paused state (optional) -->
+  <audio id="menuMusic" loop>
+    <source src="menu.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Mute & Pause/Resume Buttons -->
+  <div id="musicButton" onclick="toggleMusic()">🔇 Mute</div>
+  <div id="pauseButton" onclick="togglePause()">⏸ Pause</div>
+
+  <!-- GAME CONTAINER -->
+  <div id="gameContainer">
+    <h1>TAKE CARE OF OUR PET! 🌟</h1>
+    <div id="stats">
+      <div id="hunger">Hunger: 100%</div>
+      <div id="happiness">Happiness: 100%</div>
     </div>
+    <img id="pet" src="pet_happy.png" alt="Pet">
+    <p id="hintText">Hint: Tap your pet repeatedly for a secret surprise!</p>
+    <br>
+    <div class="button" onclick="feed()">🍕 FEED (+15%)</div>
+    <div class="button" onclick="play()">🎮 PLAY (+10%)</div>
+    <div class="button" onclick="startMiniGame(1)">Mini Game 1: Reaction Game</div>
+    <div class="button" onclick="startMiniGame(2)">Mini Game 2: Whack-a-Mole</div>
+    <div class="button" onclick="startMiniGame(3)">Mini Game 3: Timing Bar</div>
+  </div>
+
+  <!-- MINI-GAME EXPLANATION POPUP -->
+  <div id="miniGame" class="popup fade-in"></div>
+
+  <!-- FAILURE POPUP -->
+  <div id="failPopup" class="popup fade-in">
+    <h2>Mini-Game Failed!</h2>
+    <p id="failMessage"></p>
+  </div>
+
+  <!-- CONFIRMATION POPUP -->
+  <div id="confirmPopup" class="popup fade-in">
+    <h2 id="confirmMessage">Confirm</h2>
+    <div class="button" id="confirmYes">Yes</div>
+    <div class="button" id="confirmNo">No</div>
+  </div>
+
+  <!-- MEMORY SCREEN -->
+  <div id="memoryScreen" class="popup fade-in">
+    <h2>A Special Memory Has Been Unlocked! 💖</h2>
+    <img id="memoryImage" src="" alt="Memory">
+    <div class="button" onclick="closeMemory()">Close</div>
+  </div>
+
+  <!-- SECRET POPUP -->
+  <div id="secretPopup" class="popup fade-in">
+    <h2>Get ready for the fireworks!</h2>
+  </div>
+
+  <!-- FINAL CONGRATULATIONS POPUP -->
+  <div id="finalPopup" class="popup fade-in">
+    <h2>Congratulations! You have completed the game! ❤️</h2>
+    <div class="button" onclick="closeFinalPopup()">Close</div>
+  </div>
+
+  <!-- GAME OVER SCREEN -->
+  <div id="gameOverScreen" class="popup fade-in">
+    <h2>Oh No! The Pet Got Too Hungry or Too Sad...</h2>
+    <p>Try again to keep them happy!</p>
+    <div class="button" onclick="location.reload()">Restart</div>
+  </div>
+
+  <!-- MINI-GAME OVERLAY for Mini Game 2 (if needed) -->
+  <div id="gameOverlay" class="gameOverlay" style="display:none;"></div>
+
+  <!-- SOUND EFFECTS -->
+  <audio id="feedSound" src="feed.mp3"></audio>
+  <audio id="playSound" src="play_sound.mp3"></audio>
+  <audio id="successSound" src="success.mp3"></audio>
+  <audio id="dingSound" src="ding.mp3"></audio>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      /* -------------------- GLOBAL GAME STATE -------------------- */
+      let hunger = 100;
+      let happiness = 100;
+      let isMuted = false;
+      let gameRunning = false;
+      let gamePaused = false;
+      let decayInterval = null;
+      let memoryUnlocked = [false, false, false];
+      const memories = ["memory1.png", "memory2.png", "memory3.png"];
+      let isMiniGameActive = false;
+      let bonusActive = false; // Stops decay for 10 seconds after a successful mini-game.
+      
+      // For the secret easter egg, record recent click timestamps.
+      let secretTimestamps = [];
+      let secretActive = false;
+      
+      // Flags for ding sounds.
+      let wasMaxHappiness = false;
+      let wasMaxHunger = false;
+      
+      /* ------------------------- STARTUP ------------------------- */
+      function startGame() {
+        document.getElementById('startScreen').style.display = 'none';
+        document.getElementById('gameContainer').style.display = 'block';
+        document.getElementById('bgMusic').play();
+        document.getElementById('ambientSound').play();
+        if (!gameRunning && !gamePaused) {
+          gameRunning = true;
+          startDecay();
+        }
+      }
+      
+      function startDecay() {
+        decayInterval = setInterval(() => {
+          if (!gamePaused && !bonusActive) {
+            hunger = Math.max(0, hunger - 1.5);
+            happiness = Math.max(0, happiness - 1);
+            updateStats();
+            checkGameOver();
+          }
+        }, 1000);
+      }
+      
+      /* ------------------------- PAUSE/RESUME FUNCTION ------------------------- */
+      function togglePause() {
+        const pauseBtn = document.getElementById("pauseButton");
+        if (!gameRunning) return;
+        if (!gamePaused) {
+          clearInterval(decayInterval);
+          document.getElementById('bgMusic').pause();
+          document.getElementById('ambientSound').pause();
+          if (document.getElementById('menuMusic')) {
+            document.getElementById('menuMusic').play();
+          }
+          pauseBtn.textContent = "▶ Resume";
+          gamePaused = true;
+        } else {
+          startDecay();
+          document.getElementById('bgMusic').play();
+          document.getElementById('ambientSound').play();
+          if (document.getElementById('menuMusic')) {
+            document.getElementById('menuMusic').pause();
+          }
+          pauseBtn.textContent = "⏸ Pause";
+          gamePaused = false;
+        }
+      }
+      
+      /* ------------------------- PET & STAT UPDATES ------------------------- */
+      function feed() {
+        hunger = Math.min(100, hunger + 15);
+        document.getElementById('feedSound').play();
+        triggerBounce();
+        spawnParticle("❤️");
+        updateStats();
+      }
+      
+      function play() {
+        happiness = Math.min(100, happiness + 10);
+        document.getElementById('playSound').play();
+        triggerBounce();
+        spawnParticle("✨");
+        updateStats();
+      }
+      
+      function triggerBounce() {
+        const petImg = document.getElementById("pet");
+        petImg.classList.remove("bounce");
+        void petImg.offsetWidth;
+        petImg.classList.add("bounce");
+      }
+      
+      function spawnParticle(symbol) {
+        const petImg = document.getElementById("pet");
+        const rect = petImg.getBoundingClientRect();
+        const particle = document.createElement("div");
+        particle.className = "particle";
+        particle.textContent = symbol;
+        particle.style.left = (rect.left + rect.width/2 + (Math.random()*40 - 20)) + "px";
+        particle.style.top = (rect.top + rect.height/2 + (Math.random()*40 - 20)) + "px";
+        document.body.appendChild(particle);
+        setTimeout(() => { particle.remove(); }, 1000);
+      }
+      
+      function updateStats() {
+        document.getElementById("hunger").textContent = `Hunger: ${Math.floor(hunger)}%`;
+        document.getElementById("happiness").textContent = `Happiness: ${Math.floor(happiness)}%`;
+        const petImg = document.getElementById("pet");
+        petImg.src = (hunger <= 50 || happiness <= 50) ? "pet_sad.png" : "pet_happy.png";
+        if (happiness === 100 && !wasMaxHappiness) {
+          document.getElementById("dingSound").play();
+          wasMaxHappiness = true;
+        } else if (happiness < 100) {
+          wasMaxHappiness = false;
+        }
+        if (hunger === 100 && !wasMaxHunger) {
+          document.getElementById("dingSound").play();
+          wasMaxHunger = true;
+        } else if (hunger < 100) {
+          wasMaxHunger = false;
+        }
+      }
+      
+      function checkGameOver() {
+        if (hunger <= 0 || happiness <= 0) {
+          clearInterval(decayInterval);
+          document.getElementById("gameOverScreen").style.display = "block";
+        }
+      }
+      
+      /* ------------------------- MINI-GAME SYSTEM ------------------------- */
+      function startMiniGame(gameNumber) {
+        if (isMiniGameActive) {
+          showConfirmPopup("You're already in a mini-game! Continue?", function(response) {
+            if (!response) return;
+          });
+          return;
+        }
+        if (memoryUnlocked[gameNumber - 1]) {
+          showConfirmPopup("Memory already unlocked! Play again just for fun?", function(response) {
+            if (response) {
+              showMiniGameInstructions(gameNumber);
+            }
+          });
+        } else {
+          showMiniGameInstructions(gameNumber);
+        }
+      }
+      
+      function showMiniGameInstructions(gameNum) {
+        const miniGameDiv = document.getElementById("miniGame");
+        miniGameDiv.style.display = "block";
+        miniGameDiv.innerHTML = getMiniGameExplanation(gameNum);
+        const startBtn = document.getElementById("startButton");
+        if (startBtn) {
+          startBtn.addEventListener("click", function() {
+            showCountdown(gameNum);
+          });
+        }
+      }
+      
+      function getMiniGameExplanation(gameNum) {
+        switch(gameNum) {
+          case 1:
+            return `
+              <h2>Mini-Game 1: Reaction Game</h2>
+              <p>Wait for the pet to have a <strong>green border</strong>, then click it <strong>quickly</strong>!</p>
+              <div id="startButton" class="button">Start</div>
+            `;
+          case 2:
+            return `
+              <h2>Mini-Game 2: Whack-a-Mole</h2>
+              <p>You have <strong>10 seconds</strong> to click a moving mole <strong>5 times</strong>!</p>
+              <div id="startButton" class="button">Start</div>
+            `;
+          case 3:
+            return `
+              <h2>Mini-Game 3: Timing Bar</h2>
+              <p>A bar moves left-right in <strong>2-second loops</strong>. Click "STOP" when it’s near <strong>halfway</strong>!</p>
+              <div id="startButton" class="button">Start</div>
+            `;
+        }
+      }
+      
+      function showCountdown(gameNum) {
+        isMiniGameActive = true;
+        const miniGameDiv = document.getElementById("miniGame");
+        let countdownValue = 3;
+        miniGameDiv.innerHTML = `<h2>Starting in <span id="countVal">${countdownValue}</span>...</h2>`;
+        const interval = setInterval(() => {
+          countdownValue--;
+          document.getElementById("countVal").textContent = countdownValue;
+          if (countdownValue <= 0) {
+            clearInterval(interval);
+            miniGameDiv.style.display = "none";
+            switch (gameNum) {
+              case 1: miniGameReaction(1); break;
+              case 2: miniGameWhackAMole(2); break;
+              case 3: miniGameTimingBar(3); break;
+            }
+          }
+        }, 1000);
+      }
+      
+      /* ----- Mini-Game 1: Reaction Game (Brute-Forced) ----- */
+      function miniGameReaction(gameNum) {
+        const pet = document.getElementById("pet");
+        pet.removeEventListener("click", secretClickHandler);
+        pet.onclick = null;
+        const randomDelay = Math.random() * 2000 + 2000;
+        setTimeout(() => {
+          pet.style.border = "5px solid limegreen";
+          const startTime = Date.now();
+          let reacted = false;
+          function reactionHandler() {
+            if (reacted) return;
+            reacted = true;
+            const reactionTime = Date.now() - startTime;
+            pet.style.border = "none";
+            pet.removeEventListener("click", reactionHandler);
+            if (reactionTime > 700) {
+              showFailPopup("Too slow! -5% Happiness");
+              finishMiniGame(1, false, "Too slow! -5% Happiness", 5);
+            } else {
+              finishMiniGame(1, true, "", 0);
+            }
+          }
+          pet.addEventListener("click", reactionHandler);
+          setTimeout(() => {
+            if (!reacted) {
+              reacted = true;
+              pet.style.border = "none";
+              pet.removeEventListener("click", reactionHandler);
+              showFailPopup("Too slow! -5% Happiness");
+              finishMiniGame(1, false, "Too slow! -5% Happiness", 5);
+            }
+          }, 3000);
+        }, randomDelay);
+      }
+      
+      /* ----- Mini-Game 2: Whack-a-Mole (Overlay Removed) ----- */
+      function miniGameWhackAMole(gameNum) {
+        const overlay = document.getElementById("gameOverlay");
+        if (overlay) {
+          overlay.style.display = "none";
+        }
+        let clicks = 0;
+        const needed = 5;
+        const timeLimit = 10000;
+        const mole = document.createElement("button");
+        mole.className = "mole pop";
+        mole.textContent = "🐹";
+        document.body.appendChild(mole);
+        function moveMole() {
+          const x = Math.random() * (window.innerWidth - 50);
+          const y = Math.random() * (window.innerHeight - 50);
+          mole.style.position = "absolute";
+          mole.style.left = x + "px";
+          mole.style.top = y + "px";
+        }
+        mole.onclick = () => {
+          clicks++;
+          moveMole();
+        };
+        moveMole();
+        setTimeout(() => {
+          mole.remove();
+          const success = (clicks >= needed);
+          if (success) {
+            finishMiniGame(2, true, "", 0);
+          } else {
+            showFailPopup(`You whacked ${clicks}, needed ${needed}. -10% Happiness`);
+            finishMiniGame(2, false, "", 10);
+          }
+        }, timeLimit);
+      }
+      
+      /* ----- Mini-Game 3: Timing Bar ----- */
+      function miniGameTimingBar(gameNum) {
+        const timingOverlay = document.createElement("div");
+        timingOverlay.className = "timingOverlay";
+        document.body.appendChild(timingOverlay);
+        const container = document.createElement("div");
+        container.style.textAlign = "center";
+        container.innerHTML = `
+          <h2>Timing Bar</h2>
+          <p>Click "STOP" when the bar is near <strong>halfway</strong>!</p>
+          <div id="barContainer">
+            <div id="bar"></div>
+          </div>
+          <div class="button" id="stopBtn">STOP</div>
+        `;
+        timingOverlay.appendChild(container);
+        const bar = container.querySelector("#bar");
+        const stopBtn = container.querySelector("#stopBtn");
+        let startTime = Date.now();
+        let duration = 2000;
+        let direction = 1;
+        let animation = setInterval(() => {
+          let elapsed = Date.now() - startTime;
+          let progress = elapsed / duration;
+          if (progress >= 1) {
+            direction *= -1;
+            startTime = Date.now();
+            progress = 0;
+          }
+          let offset = (direction > 0) ? (progress * 100) : (100 - progress * 100);
+          bar.style.left = offset + "%";
+        }, 16);
+        stopBtn.onclick = () => {
+          clearInterval(animation);
+          timingOverlay.remove();
+          let leftPercent = parseFloat(bar.style.left);
+          let distanceFromCenter = Math.abs(50 - leftPercent);
+          const success = (distanceFromCenter <= 10);
+          if (success) {
+            finishMiniGame(3, true, "", 0);
+          } else {
+            showFailPopup("Off target! -8% Happiness");
+            finishMiniGame(3, false, "", 8);
+          }
+        };
+      }
+      
+      /* ----- Finish Mini-Game & Activate Bonus ----- */
+      function finishMiniGame(gameNum, success, failMsg, failDamage) {
+        isMiniGameActive = false;
+        document.getElementById("pet").addEventListener("click", secretClickHandler);
+        if (success) {
+          if (!memoryUnlocked[gameNum - 1]) {
+            memoryUnlocked[gameNum - 1] = true;
+            document.getElementById("memoryImage").src = memories[gameNum - 1];
+            document.getElementById("memoryScreen").style.display = "block";
+            document.getElementById("successSound").play();
+            happiness = Math.min(100, happiness + 15);
+            hunger = Math.min(100, hunger + 5);
+          } else {
+            showConfirmPopup("You succeeded! (Memory already unlocked.) Replay?", function(response) {
+              if (response) {
+                showMiniGameInstructions(gameNum);
+              }
+            });
+          }
+          bonusActive = true;
+          setTimeout(() => {
+            bonusActive = false;
+          }, 10000);
+        } else {
+          if (failDamage > 0) {
+            happiness = Math.max(0, happiness - failDamage);
+          }
+        }
+        updateStats();
+      }
+      
+      function showFailPopup(message) {
+        const failPopup = document.getElementById("failPopup");
+        document.getElementById("failMessage").textContent = message;
+        failPopup.style.display = "block";
+        setTimeout(() => {
+          failPopup.style.display = "none";
+        }, 3000);
+      }
+      
+      /* ------------------------- MEMORY & FINAL POPUP CONTROL ------------------------- */
+      function closeMemory() {
+        document.getElementById("memoryScreen").style.display = "none";
+        if (memoryUnlocked[0] && memoryUnlocked[1] && memoryUnlocked[2]) {
+          setTimeout(() => {
+            document.getElementById("finalPopup").style.display = "block";
+          }, 1000);
+        }
+      }
+      
+      function closeFinalPopup() {
+        document.getElementById("finalPopup").style.display = "none";
+      }
+      
+      /* ------------------------- CONFIRMATION POPUP ------------------------- */
+      function showConfirmPopup(message, callback) {
+        const confirmPopup = document.getElementById("confirmPopup");
+        confirmPopup.innerHTML = `
+          <h2 id="confirmMessage">${message}</h2>
+          <div class="button" id="confirmYes">Yes</div>
+          <div class="button" id="confirmNo">No</div>
+        `;
+        confirmPopup.style.display = "block";
+        document.getElementById("confirmYes").addEventListener("click", function() {
+          confirmPopup.style.display = "none";
+          callback(true);
+        });
+        document.getElementById("confirmNo").addEventListener("click", function() {
+          confirmPopup.style.display = "none";
+          callback(false);
+        });
+      }
+      
+      /* ------------------------- MUTE FUNCTION ------------------------- */
+      function toggleMusic() {
+        const music = document.getElementById('bgMusic');
+        const ambient = document.getElementById('ambientSound');
+        const button = document.getElementById('musicButton');
+        if (isMuted) {
+          music.play();
+          ambient.play();
+          button.textContent = '🔊 Unmute';
+        } else {
+          music.pause();
+          ambient.pause();
+          button.textContent = '🔇 Mute';
+        }
+        isMuted = !isMuted;
+      }
+      
+      /* ------------------------- SECRET EASTER EGG ------------------------- */
+      const petElement = document.getElementById("pet");
+      petElement.addEventListener("click", secretClickHandler);
+      
+      function secretClickHandler() {
+        if (isMiniGameActive || secretActive) return;
+        const now = Date.now();
+        secretTimestamps.push(now);
+        secretTimestamps = secretTimestamps.filter(ts => now - ts < 2000);
+        if (secretTimestamps.length >= 10) {
+          triggerSecretAnimation();
+          secretTimestamps = [];
+        }
+      }
+      
+      function triggerSecretAnimation() {
+        if (secretActive) return;
+        secretActive = true;
+        const secretPopup = document.getElementById("secretPopup");
+        secretPopup.innerHTML = `<h2>I love you more :)</h2>`;
+        secretPopup.style.display = "block";
+        for (let i = 0; i < 30; i++) {
+          const particle = document.createElement("div");
+          particle.className = "particle";
+          particle.textContent = "❤️";
+          particle.style.left = (Math.random() * window.innerWidth) + "px";
+          particle.style.top = (Math.random() * window.innerHeight) + "px";
+          document.body.appendChild(particle);
+          setTimeout(() => { particle.remove(); }, 1500);
+        }
+        setTimeout(() => {
+          secretPopup.style.display = "none";
+          secretActive = false;
+        }, 3000);
+      }
+      
+      // Expose functions for inline event handlers.
+      window.startGame = startGame;
+      window.feed = feed;
+      window.play = play;
+      window.startMiniGame = startMiniGame;
+      window.toggleMusic = toggleMusic;
+      window.togglePause = togglePause;
+      window.closeMemory = closeMemory;
+      window.closeFinalPopup = closeFinalPopup;
+    });
+  </script>
 </body>
 </html>
