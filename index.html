@@ -2,16 +2,19 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <!-- Updated viewport meta tag -->
+  <!-- Updated viewport meta tag to prevent zooming -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Our Memory Pet! 💖</title>
 
   <!-- Link to the manifest file -->
   <link rel="manifest" href="manifest.json">
-  <!-- iOS specific meta tags -->
+  <!-- iOS specific meta tags for full-screen mode -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="apple-touch-icon" href="icon-192.png">
+  
+  <!-- Import Press Start 2P font from Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
   <style>
     /* Ensure no horizontal scroll and proper sizing */
@@ -21,12 +24,12 @@
       overflow-x: hidden;
     }
     
-    /* Basic Layout & Fonts */
-    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+    /* Use Press Start 2P with a more standard fallback and force normal style */
     body {
       background: url('grassy_background.png') no-repeat center center fixed;
       background-size: cover;
-      font-family: 'Press Start 2P', cursive;
+      font-family: 'Press Start 2P', sans-serif; /* Changed fallback from 'cursive' to 'sans-serif' */
+      font-style: normal;  /* Force normal, not italic */
       text-align: center;
       color: #2E3440;
     }
@@ -161,7 +164,7 @@
       position: fixed;
       left: 0;
       right: 0;
-      top: 200px; /* to avoid overlapping stats */
+      top: 200px;
       bottom: 0;
       z-index: 900;
       background: rgba(0, 0, 0, 0.8);
@@ -223,7 +226,7 @@
     <p>Keep the pet fed &amp; happy. Win mini-games to unlock memories!</p>
     <div class="button" onclick="startGame()">START GAME</div>
   </div>
-  
+
   <!-- GAME AUDIO -->
   <audio id="bgMusic" loop>
     <source src="lofi.mp3" type="audio/mpeg">
@@ -236,11 +239,11 @@
   <audio id="menuMusic" loop>
     <source src="menu.mp3" type="audio/mpeg">
   </audio>
-  
+
   <!-- Mute & Pause/Resume Buttons -->
   <div id="musicButton" onclick="toggleMusic()">🔇 Mute</div>
   <div id="pauseButton" onclick="togglePause()">⏸ Pause</div>
-  
+
   <!-- GAME CONTAINER -->
   <div id="gameContainer">
     <h1>TAKE CARE OF OUR PET! 🌟</h1>
@@ -257,57 +260,57 @@
     <div class="button" onclick="startMiniGame(2)">Mini Game 2: Whack-a-Mole</div>
     <div class="button" onclick="startMiniGame(3)">Mini Game 3: Timing Bar</div>
   </div>
-  
+
   <!-- MINI-GAME EXPLANATION POPUP -->
   <div id="miniGame" class="popup fade-in"></div>
-  
+
   <!-- FAILURE POPUP -->
   <div id="failPopup" class="popup fade-in">
     <h2>Mini-Game Failed!</h2>
     <p id="failMessage"></p>
   </div>
-  
+
   <!-- CONFIRMATION POPUP -->
   <div id="confirmPopup" class="popup fade-in">
     <h2 id="confirmMessage">Confirm</h2>
     <div class="button" id="confirmYes">Yes</div>
     <div class="button" id="confirmNo">No</div>
   </div>
-  
+
   <!-- MEMORY SCREEN -->
   <div id="memoryScreen" class="popup fade-in">
     <h2>A Special Memory Has Been Unlocked! 💖</h2>
     <img id="memoryImage" src="" alt="Memory">
     <div class="button" onclick="closeMemory()">Close</div>
   </div>
-  
+
   <!-- SECRET POPUP -->
   <div id="secretPopup" class="popup fade-in">
     <h2>Get ready for the fireworks!</h2>
   </div>
-  
+
   <!-- FINAL CONGRATULATIONS POPUP -->
   <div id="finalPopup" class="popup fade-in">
     <h2>Congratulations! You have completed the game! ❤️</h2>
     <div class="button" onclick="closeFinalPopup()">Close</div>
   </div>
-  
+
   <!-- GAME OVER SCREEN -->
   <div id="gameOverScreen" class="popup fade-in">
     <h2>Oh No! The Pet Got Too Hungry or Too Sad...</h2>
     <p>Try again to keep them happy!</p>
     <div class="button" onclick="location.reload()">Restart</div>
   </div>
-  
+
   <!-- MINI-GAME OVERLAY for Mini Game 2 (unused now) -->
   <div id="gameOverlay" class="gameOverlay" style="display:none;"></div>
-  
+
   <!-- SOUND EFFECTS -->
   <audio id="feedSound" src="feed.mp3"></audio>
   <audio id="playSound" src="play_sound.mp3"></audio>
   <audio id="successSound" src="success.mp3"></audio>
   <audio id="dingSound" src="ding.mp3"></audio>
-  
+
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       /* -------------------- GLOBAL GAME STATE -------------------- */
