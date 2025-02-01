@@ -2,21 +2,28 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Updated viewport meta tag -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Our Memory Pet! 💖</title>
 
   <!-- Link to the manifest file -->
   <link rel="manifest" href="manifest.json">
-  <!-- iOS specific meta tags for a better app experience -->
+  <!-- iOS specific meta tags -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="apple-touch-icon" href="icon-192.png">
 
   <style>
+    /* Ensure no horizontal scroll and proper sizing */
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    
     /* Basic Layout & Fonts */
     @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
     body {
-      margin: 0;
       background: url('grassy_background.png') no-repeat center center fixed;
       background-size: cover;
       font-family: 'Press Start 2P', cursive;
@@ -313,7 +320,7 @@
       let memoryUnlocked = [false, false, false];
       const memories = ["memory1.png", "memory2.png", "memory3.png"];
       let isMiniGameActive = false;
-      let bonusActive = false; // Bonus stops decay for 10 seconds after a successful mini-game.
+      let bonusActive = false; // Stops decay for 10 seconds after a successful mini-game.
       
       // For the secret easter egg, record recent click timestamps.
       let secretTimestamps = [];
