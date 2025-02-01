@@ -77,7 +77,7 @@
       animation: pop 0.4s ease;
     }
     
-    /* UI Elements */
+    /* Start Screen */
     #startScreen {
       position: fixed;
       inset: 0;
@@ -91,6 +91,7 @@
       z-index: 1000;
     }
     
+    /* Game Container (Desktop/Portrait Default) */
     #gameContainer {
       display: none;
       margin: 30px auto;
@@ -98,6 +99,20 @@
       background: rgba(255,255,255,0.85);
       padding: 10px;
       border-radius: 10px;
+    }
+    
+    /* Split game container into two sections */
+    #topSection, #bottomSection {
+      width: 100%;
+    }
+    
+    /* Top Section: Title, Stats, Pet, and Feed/Play buttons */
+    #topSection h1 {
+      margin: 10px 0;
+    }
+    #stats {
+      margin: 5px 0;
+      font-size: 1em;
     }
     #pet {
       width: 140px;
@@ -108,22 +123,29 @@
       transition: transform 0.3s, border 0.3s;
       border: none;
     }
-    .button {
-      background: #BF616A;
-      padding: 10px 20px;
-      margin: 10px;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-      display: inline-block;
-    }
     #hintText {
       font-size: 12px;
       color: #333;
       margin-top: 5px;
     }
+    #topSection .button {
+      margin: 5px;
+      padding: 8px 16px;
+      font-size: 0.9em;
+    }
     
-    /* Fixed-position controls */
+    /* Bottom Section: Mini-Game Buttons */
+    #bottomSection {
+      margin-top: 10px;
+    }
+    #bottomSection .button {
+      margin: 5px;
+      padding: 8px 16px;
+      font-size: 0.9em;
+      display: inline-block;
+    }
+    
+    /* Fixed-position controls (these remain unchanged) */
     #musicButton, #pauseButton {
       position: fixed;
       background: #BF616A;
@@ -157,13 +179,13 @@
       width: 200px;
       border-radius: 10px;
     }
-    /* Secret, Final, Failure, Confirmation popups */
+    /* Secret, Final, Failure, and Confirmation popups */
     #secretPopup, #finalPopup, #failPopup, #confirmPopup {
       background: #fff;
       z-index: 1100;
     }
     
-    /* Overlay for mini-games (if needed) */
+    /* Overlay for Mini Game 2, if needed */
     .gameOverlay {
       position: fixed;
       left: 0;
@@ -176,7 +198,7 @@
       -webkit-backdrop-filter: none;
     }
     
-    /* Timing Overlay for Mini-Game 3 */
+    /* Timing Overlay for Mini Game 3 */
     .timingOverlay {
       position: fixed;
       left: 0;
@@ -222,38 +244,55 @@
       cursor: pointer;
     }
     
-    /* ---- Landscape Mode Adjustments ---- */
+    /* ---- Landscape Mode Adjustments for iPhone 11/12 ---- */
     @media only screen and (orientation: landscape) {
-      body {
-        font-size: 14px;
-      }
-      /* Adjust game container to fill almost the entire viewport */
+      /* Force the game container to fill the viewport */
       #gameContainer {
         width: 100vw;
-        height: calc(100vh - 20px);
-        max-width: 100vw;
-        max-height: calc(100vh - 20px);
+        height: 100vh;
         margin: 0;
         padding: 5px;
         box-sizing: border-box;
-        overflow-y: auto; /* Allow vertical scrolling if content overflows */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow: hidden;
       }
-      h1, h2, p {
-        margin: 5px;
+      /* Top section takes most of the space; allow scrolling if needed */
+      #topSection {
+        flex: 1;
+        overflow-y: auto;
+      }
+      /* Bottom section is fixed height for mini-game buttons */
+      #bottomSection {
+        flex: 0 0 80px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+      }
+      /* Adjust font sizes and margins for better fit */
+      #topSection h1 {
+        font-size: 1.2em;
+        margin: 5px 0;
+      }
+      #stats {
         font-size: 0.9em;
+        margin: 5px 0;
+      }
+      #hintText {
+        font-size: 0.8em;
+        margin: 5px;
       }
       .button {
         padding: 5px 10px;
         margin: 5px;
         font-size: 0.8em;
       }
-      #stats {
-        font-size: 0.8em;
-        margin: 5px;
-      }
+      /* Adjust pet image size */
       #pet {
-        width: 30vw;
-        height: auto;
+        width: 25vw;
+        max-width: none;
+        margin: 5px auto;
       }
     }
   </style>
@@ -285,19 +324,26 @@
 
   <!-- GAME CONTAINER -->
   <div id="gameContainer">
-    <h1>TAKE CARE OF OUR PET! 🌟</h1>
-    <div id="stats">
-      <div id="hunger">Hunger: 100%</div>
-      <div id="happiness">Happiness: 100%</div>
+    <!-- Top Section: Title, Stats, Pet, and Feed/Play Buttons -->
+    <div id="topSection">
+      <h1>TAKE CARE OF OUR PET! 🌟</h1>
+      <div id="stats">
+        <div id="hunger">Hunger: 100%</div>
+        <div id="happiness">Happiness: 100%</div>
+      </div>
+      <img id="pet" src="pet_happy.png" alt="Pet">
+      <p id="hintText">Hint: Tap your pet repeatedly for a secret surprise!</p>
+      <div>
+        <div class="button" onclick="feed()">🍕 FEED (+15%)</div>
+        <div class="button" onclick="play()">🎮 PLAY (+10%)</div>
+      </div>
     </div>
-    <img id="pet" src="pet_happy.png" alt="Pet">
-    <p id="hintText">Hint: Tap your pet repeatedly for a secret surprise!</p>
-    <br>
-    <div class="button" onclick="feed()">🍕 FEED (+15%)</div>
-    <div class="button" onclick="play()">🎮 PLAY (+10%)</div>
-    <div class="button" onclick="startMiniGame(1)">Mini Game 1: Reaction Game</div>
-    <div class="button" onclick="startMiniGame(2)">Mini Game 2: Whack-a-Mole</div>
-    <div class="button" onclick="startMiniGame(3)">Mini Game 3: Timing Bar</div>
+    <!-- Bottom Section: Mini-Game Buttons -->
+    <div id="bottomSection">
+      <div class="button" onclick="startMiniGame(1)">Mini Game 1: Reaction</div>
+      <div class="button" onclick="startMiniGame(2)">Mini Game 2: Whack-a-Mole</div>
+      <div class="button" onclick="startMiniGame(3)">Mini Game 3: Timing Bar</div>
+    </div>
   </div>
 
   <!-- MINI-GAME EXPLANATION POPUP -->
@@ -364,11 +410,11 @@
       let isMiniGameActive = false;
       let bonusActive = false; // Stops decay for 10 seconds after a successful mini-game.
       
-      // For the secret easter egg, record recent click timestamps.
+      // For the secret easter egg
       let secretTimestamps = [];
       let secretActive = false;
       
-      // Flags for ding sounds.
+      // Flags for ding sounds
       let wasMaxHappiness = false;
       let wasMaxHunger = false;
       
