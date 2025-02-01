@@ -12,19 +12,17 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="apple-touch-icon" href="icon-192.png">
-  
-  <!-- Import the Press Start 2P font -->
+
+  <!-- Import the Press Start 2P font with a sans-serif fallback -->
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
   <style>
-    /* Basic resets */
+    /* === Basic Resets === */
     html, body {
       margin: 0;
       padding: 0;
-      overflow: hidden;  /* no scrolling by default */
+      overflow: hidden; /* disable scrolling by default */
     }
-    
-    /* Base styling using Press Start 2P with a sans-serif fallback */
     body {
       background: url('grassy_background.png') no-repeat center center fixed;
       background-size: cover;
@@ -36,8 +34,8 @@
     h1, h2, p {
       margin: 10px;
     }
-    
-    /* Animations */
+
+    /* === Animation Classes (unchanged) === */
     @keyframes bounce {
       0%   { transform: translateY(0); }
       30%  { transform: translateY(-20px); }
@@ -45,18 +43,14 @@
       70%  { transform: translateY(-10px); }
       100% { transform: translateY(0); }
     }
-    .bounce {
-      animation: bounce 0.6s ease;
-    }
-    
+    .bounce { animation: bounce 0.6s ease; }
+
     @keyframes fadeIn {
       from { opacity: 0; }
       to   { opacity: 1; }
     }
-    .fade-in {
-      animation: fadeIn 0.5s ease forwards;
-    }
-    
+    .fade-in { animation: fadeIn 0.5s ease forwards; }
+
     @keyframes particleFade {
       0% { opacity: 1; transform: translateY(0); }
       100% { opacity: 0; transform: translateY(-50px); }
@@ -67,72 +61,15 @@
       animation: particleFade 1s forwards;
       font-size: 30px;
     }
-    
+
     @keyframes pop {
       0% { transform: scale(0); }
       50% { transform: scale(1.2); }
       100% { transform: scale(1); }
     }
-    .pop {
-      animation: pop 0.4s ease;
-    }
-    
-    /* Default layout (portrait mode) */
-    #gameContainer {
-      display: none;
-      margin: 30px auto;
-      max-width: 90%;
-      background: rgba(255,255,255,0.85);
-      padding: 10px;
-      border-radius: 10px;
-    }
-    
-    /* ---- Landscape Mode Adjustments (iPhone 11/13) ---- */
-    @media only screen and (orientation: landscape) {
-      #gameContainer {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        width: 100vw;
-        height: 100vh;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background: rgba(255,255,255,0.85);
-      }
-      /* Top section (title, stats, pet, controls) takes 65% of the height */
-      #topSection {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 65vh;
-        padding: 2vh 2vw;
-        box-sizing: border-box;
-        overflow: hidden;
-      }
-      /* Bottom section (mini-game buttons) takes 35% of the height */
-      #bottomSection {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 35vh;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        padding: 1vh 2vw;
-        box-sizing: border-box;
-      }
-      /* Adjust font sizes and element sizes for better readability */
-      #topSection h1 { font-size: 3vh; margin: 1vh 0; }
-      #stats { font-size: 2.5vh; margin: 1vh 0; }
-      #hintText { font-size: 2.2vh; margin: 1vh 0; }
-      .button { padding: 1.5vh 2vw; margin: 1vh; font-size: 2.2vh; }
-      #pet { width: 20vh; margin: 1vh auto; }
-    }
-    
-    /* Popup styling (remains unchanged) */
+    .pop { animation: pop 0.4s ease; }
+
+    /* === Popup Styling (unchanged) === */
     .popup {
       position: fixed;
       top: 50%;
@@ -149,61 +86,61 @@
     .popup.fade-in { animation: fadeIn 0.5s ease forwards; }
     #memoryScreen img { width: 200px; border-radius: 10px; }
     #secretPopup, #finalPopup, #failPopup, #confirmPopup { background: #fff; z-index: 1100; }
-    
-    /* Overlays and Timing Overlay remain unchanged */
-    .gameOverlay {
-      position: fixed;
-      left: 0;
-      right: 0;
-      top: 200px;
-      bottom: 0;
-      z-index: 900;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
-    }
-    
-    .timingOverlay {
-      position: fixed;
-      left: 0;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      z-index: 900;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    
-    #barContainer {
-      width: 300px;
-      height: 20px;
-      background: #ccc;
+
+    /* === Default Layout for Portrait Mode === */
+    /* In portrait mode, we simply stack everything vertically. */
+    #gameContainer {
+      display: block;
       margin: 20px auto;
-      position: relative;
-      overflow: hidden;
-      border-radius: 5px;
+      max-width: 90%;
+      background: rgba(255,255,255,0.85);
+      padding: 10px;
+      border-radius: 10px;
+      overflow-y: auto;
     }
-    #bar {
-      width: 20px;
-      height: 100%;
-      background: #BF616A;
-      position: absolute;
-      left: 0;
-      top: 0;
-    }
-    
-    .mole {
-      background: #BF616A;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      cursor: pointer;
+    /* We use a single-column layout in portrait */
+    #portraitContent { display: block; }
+
+    /* === Landscape Mode Layout === */
+    @media only screen and (orientation: landscape) {
+      /* Force gameContainer to fill the viewport */
+      #gameContainer {
+        display: grid;
+        grid-template-rows: 30vh 40vh 30vh; /* Adjust these values as needed */
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: rgba(255,255,255,0.85);
+      }
+      /* Header Section: Title & Stats */
+      #headerSection {
+        grid-row: 1 / 2;
+        padding: 1vh 2vw;
+        overflow: hidden;
+      }
+      /* Main Section: Pet, Hint, and Feed/Play Controls */
+      #mainSection {
+        grid-row: 2 / 3;
+        padding: 1vh 2vw;
+        overflow: hidden;
+      }
+      /* Footer Section: Mini-Game Buttons */
+      #footerSection {
+        grid-row: 3 / 4;
+        padding: 1vh 2vw;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        overflow: hidden;
+      }
+      /* Adjust font sizes and element sizes using viewport units */
+      #headerSection h1 { font-size: 3vh; margin: 1vh 0; }
+      #headerSection #stats { font-size: 2.5vh; margin: 1vh 0; }
+      #mainSection #hintText { font-size: 2.2vh; margin: 1vh 0; }
+      .button { padding: 1.5vh 2vw; margin: 1vh; font-size: 2.2vh; }
+      #pet { width: 20vh; margin: 1vh auto; }
     }
   </style>
 </head>
@@ -215,15 +152,20 @@
     <div class="button" onclick="startGame()">START GAME</div>
   </div>
 
-  <!-- GAME CONTAINER for Landscape Mode -->
-  <div id="gameContainer">
-    <!-- Top Section -->
-    <div id="topSection">
+  <!-- GAME CONTAINER -->
+  <!-- In portrait mode, the layout below will be used (vertical stacking). -->
+  <!-- In landscape mode, the media query below will override this layout using a grid. -->
+  <div id="gameContainer" style="display: none;">
+    <!-- Header Section -->
+    <div id="headerSection">
       <h1>TAKE CARE OF OUR PET! 🌟</h1>
       <div id="stats">
         <div id="hunger">Hunger: 100%</div>
         <div id="happiness">Happiness: 100%</div>
       </div>
+    </div>
+    <!-- Main Section -->
+    <div id="mainSection">
       <img id="pet" src="pet_happy.png" alt="Pet">
       <p id="hintText">Hint: Tap your pet repeatedly for a secret surprise!</p>
       <div id="controls">
@@ -231,15 +173,15 @@
         <div class="button" onclick="play()">🎮 PLAY (+10%)</div>
       </div>
     </div>
-    <!-- Bottom Section -->
-    <div id="bottomSection">
+    <!-- Footer Section -->
+    <div id="footerSection">
       <div class="button" onclick="startMiniGame(1)">Mini Game 1: Reaction</div>
       <div class="button" onclick="startMiniGame(2)">Mini Game 2: Whack-a-Mole</div>
       <div class="button" onclick="startMiniGame(3)">Mini Game 3: Timing Bar</div>
     </div>
   </div>
 
-  <!-- Popups -->
+  <!-- Popups (same as before) -->
   <div id="miniGame" class="popup fade-in"></div>
   <div id="failPopup" class="popup fade-in">
     <h2>Mini-Game Failed!</h2>
@@ -285,6 +227,7 @@
   <audio id="dingSound" src="ding.mp3"></audio>
 
   <script>
+    // === JavaScript Game Logic (same as before) ===
     document.addEventListener("DOMContentLoaded", function() {
       let hunger = 100;
       let happiness = 100;
@@ -295,7 +238,7 @@
       let memoryUnlocked = [false, false, false];
       const memories = ["memory1.png", "memory2.png", "memory3.png"];
       let isMiniGameActive = false;
-      let bonusActive = false;
+      let bonusActive = false; // Stops decay for 10 seconds after a successful mini-game.
       let secretTimestamps = [];
       let secretActive = false;
       let wasMaxHappiness = false;
@@ -376,8 +319,8 @@
         const particle = document.createElement("div");
         particle.className = "particle";
         particle.textContent = symbol;
-        particle.style.left = (rect.left + rect.width/2 + (Math.random()*40 - 20)) + "px";
-        particle.style.top = (rect.top + rect.height/2 + (Math.random()*40 - 20)) + "px";
+        particle.style.left = (rect.left + rect.width / 2 + (Math.random() * 40 - 20)) + "px";
+        particle.style.top = (rect.top + rect.height / 2 + (Math.random() * 40 - 20)) + "px";
         document.body.appendChild(particle);
         setTimeout(() => { particle.remove(); }, 1000);
       }
@@ -439,7 +382,7 @@
       }
       
       function getMiniGameExplanation(gameNum) {
-        switch(gameNum) {
+        switch (gameNum) {
           case 1:
             return `
               <h2>Mini-Game 1: Reaction Game</h2>
@@ -518,9 +461,7 @@
       
       function miniGameWhackAMole(gameNum) {
         const overlay = document.getElementById("gameOverlay");
-        if (overlay) {
-          overlay.style.display = "none";
-        }
+        if (overlay) { overlay.style.display = "none"; }
         let clicks = 0;
         const needed = 5;
         const timeLimit = 10000;
@@ -611,17 +552,13 @@
             hunger = Math.min(100, hunger + 5);
           } else {
             showConfirmPopup("You succeeded! (Memory already unlocked.) Replay?", function(response) {
-              if (response) {
-                showMiniGameInstructions(gameNum);
-              }
+              if (response) { showMiniGameInstructions(gameNum); }
             });
           }
           bonusActive = true;
           setTimeout(() => { bonusActive = false; }, 10000);
         } else {
-          if (failDamage > 0) {
-            happiness = Math.max(0, happiness - failDamage);
-          }
+          if (failDamage > 0) { happiness = Math.max(0, happiness - failDamage); }
         }
         updateStats();
       }
