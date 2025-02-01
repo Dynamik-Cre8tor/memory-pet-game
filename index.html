@@ -13,7 +13,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="apple-touch-icon" href="icon-192.png">
   
-  <!-- Import Press Start 2P font with a sans-serif fallback and force normal style -->
+  <!-- Import the Press Start 2P font -->
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
   <style>
@@ -21,10 +21,10 @@
     html, body {
       margin: 0;
       padding: 0;
-      overflow-x: hidden;
+      overflow: hidden;  /* no scrolling by default */
     }
     
-    /* Base styling using Press Start 2P with sans-serif fallback */
+    /* Base styling using Press Start 2P with a sans-serif fallback */
     body {
       background: url('grassy_background.png') no-repeat center center fixed;
       background-size: cover;
@@ -77,21 +77,7 @@
       animation: pop 0.4s ease;
     }
     
-    /* Start Screen */
-    #startScreen {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      background: rgba(136, 192, 208, 0.9);
-      justify-content: center;
-      align-items: center;
-      color: white;
-      font-size: 20px;
-      z-index: 1000;
-    }
-    
-    /* Game Container (Desktop/Portrait Default) */
+    /* Default layout (portrait mode) */
     #gameContainer {
       display: none;
       margin: 30px auto;
@@ -101,64 +87,52 @@
       border-radius: 10px;
     }
     
-    /* Split game container into two sections */
-    #topSection, #bottomSection {
-      width: 100%;
+    /* ---- Landscape Mode Adjustments (iPhone 11/13) ---- */
+    @media only screen and (orientation: landscape) {
+      #gameContainer {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: rgba(255,255,255,0.85);
+      }
+      /* Top section (title, stats, pet, controls) takes 65% of the height */
+      #topSection {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 65vh;
+        padding: 2vh 2vw;
+        box-sizing: border-box;
+        overflow: hidden;
+      }
+      /* Bottom section (mini-game buttons) takes 35% of the height */
+      #bottomSection {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 35vh;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 1vh 2vw;
+        box-sizing: border-box;
+      }
+      /* Adjust font sizes and element sizes for better readability */
+      #topSection h1 { font-size: 3vh; margin: 1vh 0; }
+      #stats { font-size: 2.5vh; margin: 1vh 0; }
+      #hintText { font-size: 2.2vh; margin: 1vh 0; }
+      .button { padding: 1.5vh 2vw; margin: 1vh; font-size: 2.2vh; }
+      #pet { width: 20vh; margin: 1vh auto; }
     }
     
-    /* Top Section: Title, Stats, Pet, and Feed/Play buttons */
-    #topSection h1 {
-      margin: 10px 0;
-    }
-    #stats {
-      margin: 5px 0;
-      font-size: 1em;
-    }
-    #pet {
-      width: 140px;
-      max-width: 50%;
-      cursor: pointer;
-      margin: 20px auto;
-      display: block;
-      transition: transform 0.3s, border 0.3s;
-      border: none;
-    }
-    #hintText {
-      font-size: 12px;
-      color: #333;
-      margin-top: 5px;
-    }
-    #topSection .button {
-      margin: 5px;
-      padding: 8px 16px;
-      font-size: 0.9em;
-    }
-    
-    /* Bottom Section: Mini-Game Buttons */
-    #bottomSection {
-      margin-top: 10px;
-    }
-    #bottomSection .button {
-      margin: 5px;
-      padding: 8px 16px;
-      font-size: 0.9em;
-      display: inline-block;
-    }
-    
-    /* Fixed-position controls (these remain unchanged) */
-    #musicButton, #pauseButton {
-      position: fixed;
-      background: #BF616A;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-      padding: 10px;
-      z-index: 100;
-    }
-    #musicButton { bottom: 10px; right: 10px; }
-    #pauseButton { bottom: 10px; left: 10px; }
-    
-    /* Popup styling */
+    /* Popup styling (remains unchanged) */
     .popup {
       position: fixed;
       top: 50%;
@@ -172,20 +146,11 @@
       z-index: 1000;
       text-align: center;
     }
-    .popup.fade-in {
-      animation: fadeIn 0.5s ease forwards;
-    }
-    #memoryScreen img {
-      width: 200px;
-      border-radius: 10px;
-    }
-    /* Secret, Final, Failure, and Confirmation popups */
-    #secretPopup, #finalPopup, #failPopup, #confirmPopup {
-      background: #fff;
-      z-index: 1100;
-    }
+    .popup.fade-in { animation: fadeIn 0.5s ease forwards; }
+    #memoryScreen img { width: 200px; border-radius: 10px; }
+    #secretPopup, #finalPopup, #failPopup, #confirmPopup { background: #fff; z-index: 1100; }
     
-    /* Overlay for Mini Game 2, if needed */
+    /* Overlays and Timing Overlay remain unchanged */
     .gameOverlay {
       position: fixed;
       left: 0;
@@ -198,7 +163,6 @@
       -webkit-backdrop-filter: none;
     }
     
-    /* Timing Overlay for Mini Game 3 */
     .timingOverlay {
       position: fixed;
       left: 0;
@@ -214,7 +178,6 @@
       align-items: center;
     }
     
-    /* Timing Bar */
     #barContainer {
       width: 300px;
       height: 20px;
@@ -233,7 +196,6 @@
       top: 0;
     }
     
-    /* Whack-a-Mole Button */
     .mole {
       background: #BF616A;
       color: white;
@@ -242,58 +204,6 @@
       width: 50px;
       height: 50px;
       cursor: pointer;
-    }
-    
-    /* ---- Landscape Mode Adjustments for iPhone 11/12 ---- */
-    @media only screen and (orientation: landscape) {
-      /* Force the game container to fill the viewport */
-      #gameContainer {
-        width: 100vw;
-        height: 100vh;
-        margin: 0;
-        padding: 5px;
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        overflow: hidden;
-      }
-      /* Top section takes most of the space; allow scrolling if needed */
-      #topSection {
-        flex: 1;
-        overflow-y: auto;
-      }
-      /* Bottom section is fixed height for mini-game buttons */
-      #bottomSection {
-        flex: 0 0 80px;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-      }
-      /* Adjust font sizes and margins for better fit */
-      #topSection h1 {
-        font-size: 1.2em;
-        margin: 5px 0;
-      }
-      #stats {
-        font-size: 0.9em;
-        margin: 5px 0;
-      }
-      #hintText {
-        font-size: 0.8em;
-        margin: 5px;
-      }
-      .button {
-        padding: 5px 10px;
-        margin: 5px;
-        font-size: 0.8em;
-      }
-      /* Adjust pet image size */
-      #pet {
-        width: 25vw;
-        max-width: none;
-        margin: 5px auto;
-      }
     }
   </style>
 </head>
@@ -305,26 +215,9 @@
     <div class="button" onclick="startGame()">START GAME</div>
   </div>
 
-  <!-- GAME AUDIO -->
-  <audio id="bgMusic" loop>
-    <source src="lofi.mp3" type="audio/mpeg">
-  </audio>
-  <!-- Ambient Sound -->
-  <audio id="ambientSound" loop>
-    <source src="ambient.mp3" type="audio/mpeg">
-  </audio>
-  <!-- Menu Music for paused state (optional) -->
-  <audio id="menuMusic" loop>
-    <source src="menu.mp3" type="audio/mpeg">
-  </audio>
-
-  <!-- Mute & Pause/Resume Buttons -->
-  <div id="musicButton" onclick="toggleMusic()">🔇 Mute</div>
-  <div id="pauseButton" onclick="togglePause()">⏸ Pause</div>
-
-  <!-- GAME CONTAINER -->
+  <!-- GAME CONTAINER for Landscape Mode -->
   <div id="gameContainer">
-    <!-- Top Section: Title, Stats, Pet, and Feed/Play Buttons -->
+    <!-- Top Section -->
     <div id="topSection">
       <h1>TAKE CARE OF OUR PET! 🌟</h1>
       <div id="stats">
@@ -333,12 +226,12 @@
       </div>
       <img id="pet" src="pet_happy.png" alt="Pet">
       <p id="hintText">Hint: Tap your pet repeatedly for a secret surprise!</p>
-      <div>
+      <div id="controls">
         <div class="button" onclick="feed()">🍕 FEED (+15%)</div>
         <div class="button" onclick="play()">🎮 PLAY (+10%)</div>
       </div>
     </div>
-    <!-- Bottom Section: Mini-Game Buttons -->
+    <!-- Bottom Section -->
     <div id="bottomSection">
       <div class="button" onclick="startMiniGame(1)">Mini Game 1: Reaction</div>
       <div class="button" onclick="startMiniGame(2)">Mini Game 2: Whack-a-Mole</div>
@@ -346,51 +239,46 @@
     </div>
   </div>
 
-  <!-- MINI-GAME EXPLANATION POPUP -->
+  <!-- Popups -->
   <div id="miniGame" class="popup fade-in"></div>
-
-  <!-- FAILURE POPUP -->
   <div id="failPopup" class="popup fade-in">
     <h2>Mini-Game Failed!</h2>
     <p id="failMessage"></p>
   </div>
-
-  <!-- CONFIRMATION POPUP -->
   <div id="confirmPopup" class="popup fade-in">
     <h2 id="confirmMessage">Confirm</h2>
     <div class="button" id="confirmYes">Yes</div>
     <div class="button" id="confirmNo">No</div>
   </div>
-
-  <!-- MEMORY SCREEN -->
   <div id="memoryScreen" class="popup fade-in">
     <h2>A Special Memory Has Been Unlocked! 💖</h2>
     <img id="memoryImage" src="" alt="Memory">
     <div class="button" onclick="closeMemory()">Close</div>
   </div>
-
-  <!-- SECRET POPUP -->
   <div id="secretPopup" class="popup fade-in">
     <h2>Get ready for the fireworks!</h2>
   </div>
-
-  <!-- FINAL CONGRATULATIONS POPUP -->
   <div id="finalPopup" class="popup fade-in">
     <h2>Congratulations! You have completed the game! ❤️</h2>
     <div class="button" onclick="closeFinalPopup()">Close</div>
   </div>
-
-  <!-- GAME OVER SCREEN -->
   <div id="gameOverScreen" class="popup fade-in">
     <h2>Oh No! The Pet Got Too Hungry or Too Sad...</h2>
     <p>Try again to keep them happy!</p>
     <div class="button" onclick="location.reload()">Restart</div>
   </div>
-
-  <!-- MINI-GAME OVERLAY for Mini Game 2 (if needed) -->
   <div id="gameOverlay" class="gameOverlay" style="display:none;"></div>
 
-  <!-- SOUND EFFECTS -->
+  <!-- Audio Elements -->
+  <audio id="bgMusic" loop>
+    <source src="lofi.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="ambientSound" loop>
+    <source src="ambient.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="menuMusic" loop>
+    <source src="menu.mp3" type="audio/mpeg">
+  </audio>
   <audio id="feedSound" src="feed.mp3"></audio>
   <audio id="playSound" src="play_sound.mp3"></audio>
   <audio id="successSound" src="success.mp3"></audio>
@@ -398,7 +286,6 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function() {
-      /* -------------------- GLOBAL GAME STATE -------------------- */
       let hunger = 100;
       let happiness = 100;
       let isMuted = false;
@@ -408,17 +295,12 @@
       let memoryUnlocked = [false, false, false];
       const memories = ["memory1.png", "memory2.png", "memory3.png"];
       let isMiniGameActive = false;
-      let bonusActive = false; // Stops decay for 10 seconds after a successful mini-game.
-      
-      // For the secret easter egg
+      let bonusActive = false;
       let secretTimestamps = [];
       let secretActive = false;
-      
-      // Flags for ding sounds
       let wasMaxHappiness = false;
       let wasMaxHunger = false;
       
-      /* ------------------------- STARTUP ------------------------- */
       function startGame() {
         document.getElementById('startScreen').style.display = 'none';
         document.getElementById('gameContainer').style.display = 'block';
@@ -441,7 +323,6 @@
         }, 1000);
       }
       
-      /* ------------------------- PAUSE/RESUME FUNCTION ------------------------- */
       function togglePause() {
         const pauseBtn = document.getElementById("pauseButton");
         if (!gameRunning) return;
@@ -466,7 +347,6 @@
         }
       }
       
-      /* ------------------------- PET & STAT UPDATES ------------------------- */
       function feed() {
         hunger = Math.min(100, hunger + 15);
         document.getElementById('feedSound').play();
@@ -528,7 +408,6 @@
         }
       }
       
-      /* ------------------------- MINI-GAME SYSTEM ------------------------- */
       function startMiniGame(gameNumber) {
         if (isMiniGameActive) {
           showConfirmPopup("You're already in a mini-game! Continue?", function(response) {
@@ -602,7 +481,6 @@
         }, 1000);
       }
       
-      /* ----- Mini-Game 1: Reaction Game (Brute-Forced) ----- */
       function miniGameReaction(gameNum) {
         const pet = document.getElementById("pet");
         pet.removeEventListener("click", secretClickHandler);
@@ -638,7 +516,6 @@
         }, randomDelay);
       }
       
-      /* ----- Mini-Game 2: Whack-a-Mole (Overlay Removed) ----- */
       function miniGameWhackAMole(gameNum) {
         const overlay = document.getElementById("gameOverlay");
         if (overlay) {
@@ -675,7 +552,6 @@
         }, timeLimit);
       }
       
-      /* ----- Mini-Game 3: Timing Bar ----- */
       function miniGameTimingBar(gameNum) {
         const timingOverlay = document.createElement("div");
         timingOverlay.className = "timingOverlay";
@@ -722,7 +598,6 @@
         };
       }
       
-      /* ----- Finish Mini-Game & Activate Bonus ----- */
       function finishMiniGame(gameNum, success, failMsg, failDamage) {
         isMiniGameActive = false;
         document.getElementById("pet").addEventListener("click", secretClickHandler);
@@ -742,9 +617,7 @@
             });
           }
           bonusActive = true;
-          setTimeout(() => {
-            bonusActive = false;
-          }, 10000);
+          setTimeout(() => { bonusActive = false; }, 10000);
         } else {
           if (failDamage > 0) {
             happiness = Math.max(0, happiness - failDamage);
@@ -757,18 +630,13 @@
         const failPopup = document.getElementById("failPopup");
         document.getElementById("failMessage").textContent = message;
         failPopup.style.display = "block";
-        setTimeout(() => {
-          failPopup.style.display = "none";
-        }, 3000);
+        setTimeout(() => { failPopup.style.display = "none"; }, 3000);
       }
       
-      /* ------------------------- MEMORY & FINAL POPUP CONTROL ------------------------- */
       function closeMemory() {
         document.getElementById("memoryScreen").style.display = "none";
         if (memoryUnlocked[0] && memoryUnlocked[1] && memoryUnlocked[2]) {
-          setTimeout(() => {
-            document.getElementById("finalPopup").style.display = "block";
-          }, 1000);
+          setTimeout(() => { document.getElementById("finalPopup").style.display = "block"; }, 1000);
         }
       }
       
@@ -776,7 +644,6 @@
         document.getElementById("finalPopup").style.display = "none";
       }
       
-      /* ------------------------- CONFIRMATION POPUP ------------------------- */
       function showConfirmPopup(message, callback) {
         const confirmPopup = document.getElementById("confirmPopup");
         confirmPopup.innerHTML = `
@@ -795,7 +662,6 @@
         });
       }
       
-      /* ------------------------- MUTE FUNCTION ------------------------- */
       function toggleMusic() {
         const music = document.getElementById('bgMusic');
         const ambient = document.getElementById('ambientSound');
@@ -812,7 +678,6 @@
         isMuted = !isMuted;
       }
       
-      /* ------------------------- SECRET EASTER EGG ------------------------- */
       const petElement = document.getElementById("pet");
       petElement.addEventListener("click", secretClickHandler);
       
@@ -848,7 +713,6 @@
         }, 3000);
       }
       
-      // Expose functions for inline event handlers.
       window.startGame = startGame;
       window.feed = feed;
       window.play = play;
